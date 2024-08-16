@@ -63,51 +63,47 @@ async function useGenerativeAI(text) {
 }
 
 function generatePrompt(resumeText, jobDescription) {
-  return `Please analyze the following resume in comparison to the provided job description and deliver a detailed JSON response structured as follows:
+  return `I have a job description and a resume. Please analyze the resume to determine how well it matches the job description. Provide a detailed JSON response with the following structure:
 
 {
   "checkList": {
-    "name": "Full Name",
+    "name": "Name",
     "jobRole": "Job Title/Position",
-    "contact": {
-      "number": "Phone Number",
-      "email": "Email Address"
-    },
-    "socialProfiles": {
-      "linkedIn": "LinkedIn Profile URL",
-      "portfolio": "Personal Website/Portfolio"
-    },
-    "location": "Location (City, State, Country)",
-    "summary": "Professional Summary/Objective",
-    "awardsAndRecognition": "Awards and Recognitions",
-    "education": "Highest Degree Earned",
-    "projects": "List of Projects (Title)",
-    "certifications": "List of Certifications (Title)",
-    "languagesKnown": "Languages Spoken/Written (e.g., English, Spanish)"
+    "number": "Mobile number",
+    "email": "Email address",
+    "linkedIn": "LinkedIn profile hyperlink",
+    "location": "Location",
+    "portfolio": "Personal website or portfolio",
+    "summary": "Profile summary or objective",
+    "awardsAndRecognition": "Awards",
+    "education": "Degree",
+    "projects": "title",
+    "certifications": "title",
+    "languagesKnown": "Language 1, Language 2"
   },
   "matchingDetails": {
-    "keywordsMatched": "Keywords in the resume matching the job description (e.g., JavaScript, teamwork)",
-    "keywordsMissing": "Keywords in the job description missing from the resume (e.g., JavaScript, teamwork)",
-    "skillsMatched": "Skills in the resume matching the job description (e.g., JavaScript, React)",
-    "skillsMissing": "Key skills required by the job description but missing in the resume (e.g., JavaScript, React)",
-    "experienceMatched": "Relevant experiences in the resume matching the job description (e.g., frontend development, team leadership)",
-    "experienceMissing": "Key experiences required by the job description but missing in the resume (e.g., frontend development, team leadership)",
-    "educationMatched": "Educational qualifications in the resume that match the job description (e.g., Bachelor's in Computer Science)",
-    "educationMissing": "Educational qualifications required by the job description but missing from the resume (e.g., Bachelor's in Computer Science)",
-    "overallScore": "A score from 0 to 100 indicating how well the resume matches the job description",
-    "readability": "Readability level of the resume (e.g., Excellent, Good, Fair)",
-    "actionVerbsUsed": "Number of action verbs used in the resume",
-    "estimatedReadingTime": "Estimated time to read the resume in minutes"
+    "keywordsMatched": "keywords from the resume that match the job description (e.g., frontend, problem-solving)",
+    "keywordsMissing": "keywords mentioned in the job description but missing from the resume (e.g., frontend, problem-solving)",
+    "skillsMatched": "skills from the resume that match the job description (e.g., html, css)",
+    "skillsMissing": "key skills mentioned in the job description but missing from the resume (e.g., html, css)",
+    "experienceMatched": "relevant experiences from the resume that match the job description requirements (e.g., frontend, webdevelopment)",
+    "experienceMissing": "key experiences mentioned in the job description but missing from the resume (e.g., frontend, webdevelopment)",
+    "educationMatched": "Details of educational qualifications from the resume that match the job description (e.g., bca)",
+    "educationMissing": "Details of educational qualifications required by the job description but missing from the resume (e.g., bca)",
+    "overallScore": "A score out of 100 indicating how well the resume matches the job description",
+    "readability": "Readability grade of the resume (e.g., Excellent, Good, Fair, Poor)",
+    "actionVerbsUsed": "Count of action verbs used in the resume",
+    "estimatedReadingTime": "Estimated reading time of the resume"
   },
-  "summary": "A brief summary of how well the resume aligns with the job description",
-  "suggestions": "Suggestions for improving the resume to better match the job description"
+  "summary": "A brief summary explaining the overall match between the resume and the job description",
+  "suggestions": "Suggestions for improvement"
 }
 
-Job Description:
+Here is the job description:
 
 ${jobDescription}
 
-Resume Text:
+And here is the resume:
 
 ${resumeText}`;
 }
