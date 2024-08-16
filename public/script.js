@@ -8,24 +8,6 @@ const progressElement = document.getElementById("progress");
 const promptResultElement = document.getElementById("prompt-result");
 const descriptionInput = document.querySelector(".description-input");
 
-const fields = {
-  name: document.querySelector(".name"),
-  jobRole: document.querySelector(".jobrole"),
-  email: document.querySelector(".email"),
-  mobile: document.querySelector(".mobile"),
-  linkedIn: document.querySelector(".linkedin"),
-  portfolio: document.querySelector(".portfolio"),
-  projects: document.querySelector(".projects"),
-  awardsAndRecognition: document.querySelector(".awards-and-recognition"),
-  certifications: document.querySelector(".certifications"),
-  education: document.querySelector(".education"),
-  languages: document.querySelector(".languages"),
-};
-
-const matchingDetailsSection = document.querySelector(".matching-details");
-const summarySection = document.querySelector(".summary");
-const suggestionsSection = document.querySelector(".suggestions");
-
 uploadForm.addEventListener("submit", async function (e) {
   e.preventDefault();
   const formData = new FormData(this);
@@ -53,20 +35,6 @@ uploadForm.addEventListener("submit", async function (e) {
   }
 });
 
-function showLoader() {
-  const loader = document.createElement("div");
-  loader.classList.add("loader");
-  promptResultElement.textContent = "";
-  promptResultElement.appendChild(loader);
-}
-
-function hideLoader() {
-  const loader = document.querySelector(".loader");
-  if (loader && loader.parentNode === promptResultElement) {
-    promptResultElement.removeChild(loader);
-  }
-}
-
 async function useGenerativeAI(text) {
   try {
     const model = genAI.getGenerativeModel({
@@ -82,12 +50,8 @@ async function useGenerativeAI(text) {
       const responseContent = candidates[0].content;
 
       const responseText = responseContent.parts[0].text;
-      const responseJson = JSON.parse(responseText);
+      sessionStorage.setItem("resumeReportData", responseText);
 
-      // Store the responseJson in sessionStorage
-      sessionStorage.setItem("resumeReportData", JSON.stringify(responseJson));
-
-      // Redirect to the report page
       window.location.href = "report.html";
     } else {
       handleError("No content available in the response.");
@@ -99,47 +63,51 @@ async function useGenerativeAI(text) {
 }
 
 function generatePrompt(resumeText, jobDescription) {
-  return `I have a job description and a resume. Please analyze the resume to determine how well it matches the job description. Provide a detailed JSON response with the following structure:
+  return `Please analyze the following resume in comparison to the provided job description and deliver a detailed JSON response structured as follows:
 
 {
   "checkList": {
-    "name": "Name or null if not available",
-    "jobTitle": "Job Title/Position or null if not available",
-    "number": "Mobile number or null if not available",
-    "email": "Email address or null if not available",
-    "linkedin": "LinkedIn profile hyperlink or null if not available",
-    "location": "Location or null if not available",
-    "portfolio": "Personal website or portfolio or null if not available",
-    "summary": "Profile summary or objective or null if not available",
-    "awardsAndRecognition": "Awards or null if not available",
-    "education": "Degree",
-    "projects": "title or null if not available",
-    "certifications": "title",
-    "languagesKnown": "Language 1, Language 2 or null if not available"
+    "name": "Full Name",
+    "jobRole": "Job Title/Position",
+    "contact": {
+      "number": "Phone Number",
+      "email": "Email Address"
+    },
+    "socialProfiles": {
+      "linkedIn": "LinkedIn Profile URL",
+      "portfolio": "Personal Website/Portfolio"
+    },
+    "location": "Location (City, State, Country)",
+    "summary": "Professional Summary/Objective",
+    "awardsAndRecognition": "Awards and Recognitions",
+    "education": "Highest Degree Earned",
+    "projects": "List of Projects (Title)",
+    "certifications": "List of Certifications (Title)",
+    "languagesKnown": "Languages Spoken/Written (e.g., English, Spanish)"
   },
   "matchingDetails": {
-    "keywordsMatched": "List of keywords from the resume that match the job description or null if not available",
-    "keywordsMissing": "List of keywords mentioned in the job description but missing from the resume or null if not available",
-    "skillsMatched": "List of skills from the resume that match the job description or null if not available",
-    "skillsMissing": "List of key skills mentioned in the job description but missing from the resume or null if not available",
-    "experienceMatched": "List of relevant experiences from the resume that match the job description requirements or null if not available",
-    "experienceMissing": "List of key experiences mentioned in the job description but missing from the resume or null if not available",
-    "educationMatched": "Details of educational qualifications from the resume that match the job description or null if not available",
-    "educationMissing": "Details of educational qualifications required by the job description but missing from the resume or null if not available",
-    "overallScore": "A score out of 100 indicating how well the resume matches the job description or null if not available",
-    "readability": "Readability grade of the resume (e.g., Excellent, Good, Fair) or null if not available",
-    "actionVerbsUsed": "Count of action verbs used in the resume or null if not available",
-    "estimatedReadingTime": "Estimated reading time of the resume in minutes or null if not available"
+    "keywordsMatched": "Keywords in the resume matching the job description (e.g., JavaScript, teamwork)",
+    "keywordsMissing": "Keywords in the job description missing from the resume (e.g., JavaScript, teamwork)",
+    "skillsMatched": "Skills in the resume matching the job description (e.g., JavaScript, React)",
+    "skillsMissing": "Key skills required by the job description but missing in the resume (e.g., JavaScript, React)",
+    "experienceMatched": "Relevant experiences in the resume matching the job description (e.g., frontend development, team leadership)",
+    "experienceMissing": "Key experiences required by the job description but missing in the resume (e.g., frontend development, team leadership)",
+    "educationMatched": "Educational qualifications in the resume that match the job description (e.g., Bachelor's in Computer Science)",
+    "educationMissing": "Educational qualifications required by the job description but missing from the resume (e.g., Bachelor's in Computer Science)",
+    "overallScore": "A score from 0 to 100 indicating how well the resume matches the job description",
+    "readability": "Readability level of the resume (e.g., Excellent, Good, Fair)",
+    "actionVerbsUsed": "Number of action verbs used in the resume",
+    "estimatedReadingTime": "Estimated time to read the resume in minutes"
   },
-  "summary": "A brief summary explaining the overall match between the resume and the job description",
-  "suggestions": "Suggestions for improvement"
+  "summary": "A brief summary of how well the resume aligns with the job description",
+  "suggestions": "Suggestions for improving the resume to better match the job description"
 }
 
-Here is the job description:
+Job Description:
 
 ${jobDescription}
 
-And here is the resume:
+Resume Text:
 
 ${resumeText}`;
 }
@@ -147,4 +115,18 @@ ${resumeText}`;
 function handleError(message) {
   console.error(message);
   promptResultElement.textContent = message;
+}
+
+function showLoader() {
+  const loader = document.createElement("div");
+  loader.classList.add("loader");
+  promptResultElement.textContent = "";
+  promptResultElement.appendChild(loader);
+}
+
+function hideLoader() {
+  const loader = document.querySelector(".loader");
+  if (loader && loader.parentNode === promptResultElement) {
+    promptResultElement.removeChild(loader);
+  }
 }

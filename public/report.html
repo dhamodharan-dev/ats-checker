@@ -18,149 +18,44 @@
         <p><strong>LinkedIn:</strong> <span class="linkedin"></span></p>
         <p><strong>Portfolio:</strong> <span class="portfolio"></span></p>
         <p><strong>Projects:</strong> <span class="projects"></span></p>
+        <p><strong>Education:</strong> <span class="education"></span></p>
+        <p>
+          <strong>Certifications:</strong> <span class="certifications"></span>
+        </p>
         <p>
           <strong>Awards and Recognition:</strong>
           <span class="awards-and-recognition"></span>
         </p>
-        <p>
-          <strong>Certifications:</strong> <span class="certifications"></span>
-        </p>
-        <p><strong>Education:</strong> <span class="education"></span></p>
         <p><strong>Languages:</strong> <span class="languages"></span></p>
       </section>
 
       <h2>Overall</h2>
       <section class="overall">
-        <p><strong>Overall score:</strong> <span class="overall-score"></span></p>
-        <p><strong>Action verbs used:</strong> <span class="action-verbs-used"></span></p>
         <p><strong>Readability:</strong> <span class="readability"></span></p>
         <p><strong>Estimated reading time:</strong> <span class="estimated-reading-time"></span></p>
-        <p><strong>LinkedIn:</strong> <span class="linkedin"></span></p>
+        <p><strong>Action verbs used:</strong> <span class="action-verbs-used"></span></p>
+        <p><strong>Overall score:</strong> <span class="overall-score"></span></p>
       </section>
 
       <h2>Missing Details</h2>
-      <section class="matching-details">
-        <p><strong>Name:</strong> <span class="name"></span></p>
-        <p><strong>Job Role:</strong> <span class="jobrole"></span></p>
-        <p><strong>Email:</strong> <span class="email"></span></p>
-        <p><strong>Mobile:</strong> <span class="mobile"></span></p>
-        <p><strong>LinkedIn:</strong> <span class="linkedin"></span></p>
-        <p><strong>Portfolio:</strong> <span class="portfolio"></span></p>
-        <p><strong>Projects:</strong> <span class="projects"></span></p>
-        <p><strong>Education:</strong> <span class="education"></span></p>
-        <p>
-          <strong>Certifications:</strong> <span class="certifications"></span>
-        </p>
-        <p>
-          <strong>Awards and Recognition:</strong>
-          <span class="awards-and-recognition"></span>
-        </p>
-        <p><strong>Languages:</strong> <span class="languages"></span></p>
+      <section class="missing-details">
+        <p><strong>Education:</strong> <span class="education-missing"></span></p>
+        <p><strong>Experience:</strong> <span class="experience-missing"></span></p>
+        <p><strong>Keywords:</strong> <span class="keywords-missing"></span></p>
+        <p><strong>Skills:</strong> <span class="skills-missing"></span></p>
       </section>
 
       <h2>Summary</h2>
-      <section class="summary"></section>
+      <section class="summary-section">
+        <p class="summary"></p>
+      </section>
 
       <h2>Suggestions</h2>
-      <section class="suggestions"></section>
+      <section class="suggestions-section">
+        <p class="suggestions"></p>
+      </section>
       <button onclick="window.location.href='index.html'">Refresh</button>
     </section>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const resumeReportData = JSON.parse(
-          sessionStorage.getItem("resumeReportData")
-        );
-
-        if (resumeReportData) {
-          populateFields(resumeReportData);
-          console.log(resumeReportData);
-        } else {
-          document.querySelector(".report-section").textContent =
-            "No report data available.";
-        }
-      });
-
-      function populateFields(responseJson) {
-        const fields = {
-          name: document.querySelector(".name"),
-          jobRole: document.querySelector(".jobrole"),
-          email: document.querySelector(".email"),
-          mobile: document.querySelector(".mobile"),
-          linkedIn: document.querySelector(".linkedin"),
-          portfolio: document.querySelector(".portfolio"),
-          projects: document.querySelector(".projects"),
-          awardsAndRecognition: document.querySelector(
-            ".awards-and-recognition"
-          ),
-          certifications: document.querySelector(".certifications"),
-          education: document.querySelector(".education"),
-          languages: document.querySelector(".languages"),
-        };
-
-        const matchingDetailsSection =
-          document.querySelector(".matching-details");
-        const summarySection = document.querySelector(".summary");
-        const suggestionsSection = document.querySelector(".suggestions");
-
-        try {
-          setFieldContent(fields.name, responseJson.checkList.name);
-          setFieldContent(fields.jobRole, responseJson.checkList.jobTitle);
-          setFieldContent(fields.email, responseJson.checkList.email);
-          setFieldContent(fields.mobile, responseJson.checkList.number);
-          setFieldContent(fields.linkedIn, responseJson.checkList.linkedin);
-          setFieldContent(fields.portfolio, responseJson.checkList.portfolio);
-          setFieldContent(fields.projects, responseJson.checkList.projects);
-          setFieldContent(
-            fields.awardsAndRecognition,
-            responseJson.checkList.awardsAndRecognition
-          );
-          setFieldContent(
-            fields.certifications,
-            JSON.stringify(responseJson.checkList.certifications)
-          );
-          setFieldContent(
-            fields.education,
-            JSON.stringify(responseJson.checkList.education)
-          );
-          setFieldContent(
-            fields.languages,
-            responseJson.checkList.languagesKnown
-          );
-
-          setFieldContent(
-            matchingDetailsSection,
-            JSON.stringify(responseJson.matchingDetails)
-          );
-          setFieldContent(summarySection, responseJson.summary);
-          setFieldContent(suggestionsSection, responseJson.suggestions);
-        } catch (error) {
-          console.error("Error populating fields:", error.message);
-        }
-      }
-
-      function createNestedList(obj) {
-        const ul = document.createElement("ul");
-        ul.classList.add("extracted-text");
-        for (const [key, value] of Object.entries(obj)) {
-          const li = document.createElement("li");
-          li.classList.add("extracted-text-list");
-          if (typeof value === "object" && value !== null) {
-            li.textContent = `${key.toUpperCase()}:`;
-            const nestedList = createNestedList(value);
-            li.appendChild(nestedList);
-          } else {
-            li.textContent = `${key.toUpperCase()}: ${value}`;
-          }
-          ul.appendChild(li);
-        }
-        return ul;
-      }
-
-      function setFieldContent(fieldElement, content) {
-        if (fieldElement) {
-          fieldElement.textContent = content || "N/A";
-        }
-      }
-    </script>
+    <script src="report.js"></script>
   </body>
 </html>
